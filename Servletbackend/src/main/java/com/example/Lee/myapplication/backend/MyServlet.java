@@ -9,7 +9,11 @@ package com.example.Lee.myapplication.backend;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.channels.Channels;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsInputChannel;
@@ -50,9 +54,21 @@ public class MyServlet extends HttpServlet {
         if(op.equals("create")){
             System.out.println("Equals create");
         }
-        else{
-            System.out.println("Does not equal create");
+        else if(op.equals("list")){
+            System.out.println("Equals List");
+            try {
+                listEntries(req, resp);
+            }catch (Exception E){
+
+            }
         }
+    }
+
+    public void listEntries(HttpServletRequest req, HttpServletResponse resp) throws Exception{
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        resp.setContentType("text/html");
+        PrintWriter out = resp.getWriter();
+        out.write("LALALALALALA");
     }
 
     private GcsFilename getFileName(HttpServletRequest req) {
