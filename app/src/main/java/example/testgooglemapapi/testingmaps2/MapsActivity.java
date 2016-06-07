@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -104,6 +106,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerDragListener(listener);*/
         checkHistory();
         markerClicked = false;
+        new AsyncTask<Void, Void, String>() {
+
+            @Override
+            protected String doInBackground(Void... params) {
+
+                try {
+                    //The address corresponds to the "localhost" address for genymotion emulator,
+                    //For the android studio emulator you must use  http://10.0.2.2:8888 instead
+                    String mydate = "5";
+                    String latitude = "123456";
+                    String longitude = "98765";
+                    TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                    String android_id = tm.getDeviceId();
+                    Server server = new Server(getApplicationContext(),android_id,mydate, latitude, longitude);
+                    try{
+                        server.send();
+                    }catch (Exception E){
+                        System.out.println(E);
+                    }
+                    /*String url = "http://10.0.3.2:8888/tutorialauth?op=showAllBooks";
+                    return new HttpGet(url, "UTF-8").finish();*/
+                    //The JSON string is returned to onPostExecute then passed to populateList
+
+                } catch (final Exception e) {
+                    // toastError(e);
+                    e.printStackTrace();
+                    return "";
+                }
+                return "Completed async task";
+            }
+
+            protected void onPostExecute(String result) {
+                if (result != null && result.length() > 0 && result.startsWith("[")) {
+                    Toast.makeText(getBaseContext(), "IT WAS SUCCESSFUL", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "GAWDDD", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
     }
 
     public void displayHistory(GoogleMap mmap){

@@ -33,6 +33,6 @@ public class Server {
     }
 
     private static String getUrl() {
-        return "https://carbide-kayak-128503.appspot.com/";
+        return "https://carbide-kayak-128503.appspot.com/server";
     }
 }
